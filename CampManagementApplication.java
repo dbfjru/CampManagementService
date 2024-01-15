@@ -298,8 +298,8 @@ public class CampManagementApplication {
         inquireStudent();//학생목록 조회
         boolean judge;
         String studentId;
-        do{
-          studentId = getStudentId();
+        do {
+            studentId = getStudentId();
             if (subjectList.containsKey(studentId)) {
                 displayStudentSubjectList(studentId);
                 judge = false;
@@ -307,64 +307,65 @@ public class CampManagementApplication {
                 System.out.println("해당 ID를 가진 학생은 존재하지 않습니다. 다시 입력해주세요.");
                 judge = true;
             }
-        }while(judge);
+        } while (judge);
+
         //Step2. 과목 선택하는 입력
         System.out.println("등록하고자하는 '과목 번호'를 입력하세요.(입력예 : 1)");
         int subjectIndex;
-
-        do{
-            subjectIndex = sc.nextInt()-1;
+        do {
+            subjectIndex = sc.nextInt() - 1;
             sc.nextLine(); // 버퍼지우기
-            if(subjectIndex >= subjectList.get(studentId).size() || subjectIndex< 0){
+            if (subjectIndex >= subjectList.get(studentId).size() || subjectIndex < 0) {
                 System.out.println("잘못된 번호입니다. 다시 입력해주세요.");
                 judge = true;
-            }else{
+            } else {
                 judge = false;
             }
-        }while(judge);
+        } while (judge);
+
         String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 등록하고자 하는 과목명을 가져옴
-        if(scoreMap.containsKey(studentId)){
+        if (scoreMap.containsKey(studentId)) {
             //학생의 아이디 가지고 있는 경우
-            if(scoreMap.get(studentId).containsKey(inputSubjectName)){//해당 과목을 가지고 있는 경우
+            if (scoreMap.get(studentId).containsKey(inputSubjectName)) {//해당 과목을 가지고 있는 경우
 //                System.out.println("case 1");
-                int roundInfo = scoreMap.get(studentId).get(inputSubjectName).size()+1; //해당 과목 점수 리스트에 추가
-                System.out.println(inputSubjectName + " " + roundInfo+" 회차 입력중입니다.");
-            }else{ // 해당과목에 대한 정보가 없는경우
+                int roundInfo = scoreMap.get(studentId).get(inputSubjectName).size() + 1; //해당 과목 점수 리스트에 추가
+                System.out.println(inputSubjectName + " " + roundInfo + " 회차 입력중입니다.");
+            } else { // 해당과목에 대한 정보가 없는경우
 //                System.out.println("case 2");
                 System.out.println(inputSubjectName + " 1회차 입력중입니다.");
             }
-        }else{
+        } else {
 //            System.out.println("case 3");
             //학생에 대한 성적 입력이 처음인 경우
-            System.out.println( inputSubjectName + " 1회차 입력중입니다.");
+            System.out.println(inputSubjectName + " 1회차 입력중입니다.");
         }
         System.out.println("점수를 입력해주세요...");
         System.out.println("(단, 점수는 0~100 의 값)");
         int inputScore;
-        do{
+        do {
             inputScore = sc.nextInt();
             sc.nextLine();//버퍼지우기
-            if(inputScore > 100 || inputScore < 0){
+            if (inputScore > 100 || inputScore < 0) {
                 System.out.println("잘못된 점수 입니다. 다시 입력해주세요.");
                 judge = true;
-            }else{
+            } else {
                 judge = false;
             }
-        }while(judge);
+        } while (judge);
 
-        if(scoreMap.containsKey(studentId)){
+        if (scoreMap.containsKey(studentId)) {
             //학생의 아이디 가지고 있는 경우
-            if(scoreMap.get(studentId).containsKey(inputSubjectName)){//해당 과목을 가지고 있는 경우
+            if (scoreMap.get(studentId).containsKey(inputSubjectName)) {//해당 과목을 가지고 있는 경우
 //                System.out.println("case 1");
                 scoreMap.get(studentId).get(inputSubjectName).add(new Score(inputScore)); //해당 과목 점수 리스트에 추가
-            }else{ // 해당과목에 대한 정보가 없는경우
+            } else { // 해당과목에 대한 정보가 없는경우
 //                System.out.println("case 2");
                 ArrayList<Score> scoreList = new ArrayList<>();
                 scoreList.add(new Score(inputScore));
                 HashMap<String, ArrayList<Score>> subjectScoreMap = new HashMap<>();//해당 과목 맵 생성
-                scoreMap.get(studentId).put(inputSubjectName,scoreList);
+                scoreMap.get(studentId).put(inputSubjectName, scoreList);
             }
-        }else{
+        } else {
 //            System.out.println("case 3");
             //학생에 대한 성적 입력이 처음인 경우
             ArrayList<Score> scoreList = new ArrayList<>();
@@ -377,11 +378,11 @@ public class CampManagementApplication {
     }
 
     private static void displayStudentSubjectList(String studentId) {
-        ArrayList<Subject> tempList = subjectList.get(studentId); // 학생이 가지고 있는 과목 리스트를 tempList에 저장
+        ArrayList<Subject> studentSubjectList = subjectList.get(studentId); // 학생이 가지고 있는 과목 리스트를 tempList에 저장
         int index = 1;
         System.out.println("----------------------------");
-        for (Subject subject : tempList) {
-            System.out.print("[ "+ index + ". " + subject.getSubjectName() + " ] ");
+        for (Subject subject : studentSubjectList) {
+            System.out.print("[ " + index + ". " + subject.getSubjectName() + " ] ");
             index++;
         }
         System.out.println("\n----------------------------");
@@ -393,7 +394,7 @@ public class CampManagementApplication {
         inquireStudent(); // 학생 리스트
         boolean judge;
         String studentId;
-        do{
+        do {
             studentId = getStudentId();
             if (subjectList.containsKey(studentId)) {
                 displayStudentSubjectList(studentId);
@@ -402,35 +403,35 @@ public class CampManagementApplication {
                 System.out.println("해당 ID를 가진 학생은 존재하지 않습니다. 다시 입력해주세요.");
                 judge = true;
             }
-        }while(judge);
+        } while (judge);
         //Step2. 과목 선택하는 입력
         System.out.println("수정하고자하는 '과목 번호'를 입력하세요...");
         int subjectIndex;
-        do{
-            subjectIndex = sc.nextInt()-1;
+        do {
+            subjectIndex = sc.nextInt() - 1;
             sc.nextLine(); // 버퍼지우기
-            if(subjectIndex >= subjectList.get(studentId).size() || subjectIndex< 0){
+            if (subjectIndex >= subjectList.get(studentId).size() || subjectIndex < 0) {
                 System.out.println("잘못된 번호입니다. 다시 입력해주세요.");
                 judge = true;
-            }else{
+            } else {
                 judge = false;
             }
-        }while(judge);
+        } while (judge);
 
         String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 수정하고자 하는 과목명
         //검증 과정! 만약 해당과목에 점수가 없는경우에는 "해당과목의 성적이 존재하지 않습니다." 출력
-        ArrayList<Score> tempScoreList;
-        if(scoreMap.containsKey(studentId)){
+        ArrayList<Score> scoreList;
+        if (scoreMap.containsKey(studentId)) {
             //학생의 아이디 가지고 있는 경우
-            if(scoreMap.get(studentId).containsKey(inputSubjectName)){//해당 과목을 가지고 있는 경우
+            if (scoreMap.get(studentId).containsKey(inputSubjectName)) {//해당 과목을 가지고 있는 경우
 //                System.out.println("case 1");
-                tempScoreList = scoreMap.get(studentId).get(inputSubjectName);
-            }else{ // 해당과목에 대한 정보가 없는경우
+                scoreList = scoreMap.get(studentId).get(inputSubjectName);
+            } else { // 해당과목에 대한 정보가 없는경우
 //                System.out.println("case 2");
                 System.out.println("해당과목의 성적이 존재하지 않습니다.");
                 return;
             }
-        }else{
+        } else {
 //            System.out.println("case 3");
             //학생에 대한 성적 입력이 처음인 경우
             System.out.println("해당과목의 성적이 존재하지 않습니다.");
@@ -438,43 +439,43 @@ public class CampManagementApplication {
         }
 
         int index = 1;
-        for(Object score : tempScoreList){
-            System.out.print("[ "+ index++ +"회 : "+((Score)score).getTestScore()+" 점 ]");
+        for (Object score : scoreList) {
+            System.out.print("[ " + index++ + "회 : " + ((Score) score).getTestScore() + " 점 ]");
         }
         System.out.println("\n수정을 원하는 회차를 입력하세요.(입력예 : 1)");
         int inputRound;
-        do{
-           inputRound = sc.nextInt()-1;
-           sc.nextLine();
-            if(inputRound < 0 || inputRound >= tempScoreList.size()){
+        do {
+            inputRound = sc.nextInt() - 1;
+            sc.nextLine();
+            if (inputRound < 0 || inputRound >= scoreList.size()) {
                 System.out.println("잘못된 회차입니다. 다시 입력해주세요.");
                 judge = true;
-            }else{
+            } else {
                 judge = false;
             }
-        }while(judge);
+        } while (judge);
 
         System.out.println("점수를 입력해주세요...");
         System.out.println("(단, 점수는 0~100 의 값)");
         int inputScore;
-        do{
+        do {
             inputScore = sc.nextInt();
             sc.nextLine();//버퍼지우기
-            if(inputScore > 100 || inputScore < 0){
+            if (inputScore > 100 || inputScore < 0) {
                 System.out.println("잘못된 점수 입니다. 다시 입력해주세요.");
                 judge = true;
-            }else{
+            } else {
                 judge = false;
             }
-        }while(judge);
+        } while (judge);
         scoreMap.get(studentId).get(inputSubjectName).get(inputRound).setTestScore(inputScore);
-//        tempScoreList.set(inputRound,new Score(inputScore));
-/* 원인
-* 1. 일단 어레이 리스트에서 set함수가 동작하는 방식이 내가 생각한 방식으로 동작하는지 알 수 없다.
-* set함수의 파라미터는 int index , Object object 인데, 여기서 Object 부분을 처리하려면 new Score(inputScore) 이어야할듯*/
+//        scoreList.set(inputRound,new Score(inputScore));
+        /* 원인
+         * 1. 일단 어레이 리스트에서 set함수가 동작하는 방식이 내가 생각한 방식으로 동작하는지 알 수 없다.
+         * set함수의 파라미터는 int index , Object object 인데, 여기서 Object 부분을 처리하려면 new Score(inputScore) 이어야할듯*/
 
 
-//        // 기능 구현
+        // 기능 구현
         System.out.println("\n점수 수정 성공!");
     }
 
@@ -487,22 +488,22 @@ public class CampManagementApplication {
         //---------임시-------------------------------
         // 점수 등록이 정상적으로 되었는지 확인한 코드입니다. 수정하시면 됩니다.
         System.out.println("조회하고자하는 '과목 번호'를 입력하세요...");
-        int subjectIndex = sc.nextInt()-1;
+        int subjectIndex = sc.nextInt() - 1;
         sc.nextLine();//버퍼지우기
-        if(subjectIndex >= subjectList.get(studentId).size() || subjectIndex< 0){
+        if (subjectIndex >= subjectList.get(studentId).size() || subjectIndex < 0) {
             System.out.println("잘못된 번호입니다. 메뉴로 돌아갑니다.");
             return;
         }
         String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 조회하고자하는 과목명
-        if(!scoreMap.get(studentId).containsKey(inputSubjectName)){
+        if (!scoreMap.get(studentId).containsKey(inputSubjectName)) {
             System.out.println("해당과목은 등록된 점수가 없습니다.");
             return;
         }
         System.out.println("\n해당과목 점수를 조회합니다...");
         ArrayList<Score> temp = scoreMap.get(studentId).get(inputSubjectName);
         int index = 1;
-        for(Score score : temp){
-            System.out.println(index++ +"회차 : " +score.getTestScore());
+        for (Score score : temp) {
+            System.out.println(index++ + "회차 : " + score.getTestScore());
 
         }
         //-------------------------------------------

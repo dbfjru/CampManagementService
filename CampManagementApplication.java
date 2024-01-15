@@ -378,7 +378,7 @@ public class CampManagementApplication {
     }
 
     private static void displayStudentSubjectList(String studentId) {
-        ArrayList<Subject> studentSubjectList = subjectList.get(studentId); // 학생이 가지고 있는 과목 리스트를 tempList에 저장
+        ArrayList<Subject> studentSubjectList = subjectList.get(studentId); // 학생이 가지고 있는 과목 리스트를 studentSubjectList에 저장
         int index = 1;
         System.out.println("----------------------------");
         for (Subject subject : studentSubjectList) {

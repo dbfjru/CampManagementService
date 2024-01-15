@@ -400,7 +400,7 @@ public class CampManagementApplication {
             return;
         }
         scoreMap.get(studentId).get(inputSubjectName).get(inputRound).setTestScore(inputScore);
-//        // 기능 구현
+        // 기능 구현
         System.out.println("\n점수 수정 성공!");
     }
 
@@ -408,34 +408,90 @@ public class CampManagementApplication {
     private static void inquireRoundGradeBySubject() {
         inquireStudent();
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
+
         // 기능 구현 (조회할 특정 과목)
         displayStudentSubjectList(studentId);
-        //---------임시-------------------------------
-        // 점수 등록이 정상적으로 되었는지 확인한 코드입니다. 수정하시면 됩니다.
-        System.out.println("조회하고자하는 '과목 번호'를 입력하세요...");
-        int subjectIndex = sc.nextInt()-1;
-        sc.nextLine();//버퍼지우기
-        if(subjectIndex >= subjectList.get(studentId).size() || subjectIndex< 0){
+
+        System.out.println("조회하고자 하는 '과목 번호'를 입력하세요...");
+        int subjectIndex = sc.nextInt() - 1;
+        sc.nextLine(); // 버퍼 비우기
+
+        if (subjectIndex >= subjectList.get(studentId).size() || subjectIndex < 0) {
             System.out.println("잘못된 번호입니다. 메뉴로 돌아갑니다.");
             return;
         }
-        String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 조회하고자하는 과목명
-        if(!scoreMap.get(studentId).containsKey(inputSubjectName)){
-            System.out.println("해당과목은 등록된 점수가 없습니다.");
+
+        String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 조회하고자 하는 과목명
+
+        if (!scoreMap.containsKey(studentId) || !scoreMap.get(studentId).containsKey(inputSubjectName)) {
+            System.out.println("해당 과목은 등록된 점수가 없습니다.");
             return;
         }
-        System.out.println("\n해당과목 점수를 조회합니다...");
-        ArrayList<Score> temp = scoreMap.get(studentId).get(inputSubjectName);
-        int index = 1;
-        for(Score score : temp){
-            System.out.println(index++ +"회차 : " +score.getTestScore());
 
+        // 조회하려는 과목의 타입을 가져옴
+        String subjectType = subjectList.get(studentId).get(subjectIndex).getSubjectType();
+
+        // 회차별 등급 조회 및 출력
+        System.out.println();
+        System.out.println("<" + inputSubjectName + ">" + " 과목 회차별 등급을 조회합니다...");
+        System.out.print("과목 타입: ");
+        if (subjectType.equals("MANDATORY")) {
+            System.out.println("필수 과목");
+        } else if (subjectType.equals("CHOICE")) {
+            System.out.println("선택 과목");
+        } else {
+            System.out.println("알 수 없는 타입");
         }
-        //-------------------------------------------
 
-        System.out.println("회차별 등급을 조회합니다...");
-        // 기능 구현
+        inquireGradeBySubject(studentId, inputSubjectName, subjectType);
+        System.out.println();
         System.out.println("\n등급 조회 성공!");
     }
 
+    // 점수를 받아 등급을 계산하고 출력
+    private static void inquireGradeBySubject(String studentId, String subjectName, String subjectType) {
+        ArrayList<Score> temp = scoreMap.get(studentId).get(subjectName);
+
+        int index = 1;
+        System.out.print("| ");
+        for (Score score : temp) {
+            int testScore = score.getTestScore();
+
+            // 등급 계산 로직
+            char grade = 'X';
+            if (subjectType.equals("MANDATORY")) {
+                // 필수과목인 경우의 등급 계산 로직
+                if (testScore >= 95) {
+                    grade = 'A';
+                } else if (testScore >= 90) {
+                    grade = 'B';
+                } else if (testScore >= 80) {
+                    grade = 'C';
+                } else if (testScore >= 70) {
+                    grade = 'D';
+                } else if (testScore >= 60) {
+                    grade = 'F';
+                } else {
+                    grade = 'N';
+                }
+            } else if (subjectType.equals("CHOICE")) {
+                // 선택과목인 경우의 등급 계산 로직
+                if (testScore >= 90) {
+                    grade = 'A';
+                } else if (testScore >= 80) {
+                    grade = 'B';
+                } else if (testScore >= 70) {
+                    grade = 'C';
+                } else if (testScore >= 60) {
+                    grade = 'D';
+                } else if(testScore >= 50) {
+                    grade = 'F';
+                }
+                else {
+                    grade = 'N';
+                }
+            }
+            System.out.print(index++ + "회차 : " + grade + " | ");
+        }
+    }
 }

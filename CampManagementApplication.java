@@ -196,6 +196,7 @@ public class CampManagementApplication {
     public static Subject findSubject(String name) throws NullPointerException {
         Subject res = null;
         for (int i = 0; i < subjectStore.size(); i++) {
+
             if (subjectStore.get(i).getSubjectName().equals(name)) {
                 res = subjectStore.get(i);
             }

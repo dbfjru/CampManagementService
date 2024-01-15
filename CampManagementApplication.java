@@ -226,7 +226,7 @@ public class CampManagementApplication {
             System.out.println("선택한 필수 과목이 3개 미만입니다!");
             System.out.println("선택한 선택 과목이 2개 미만입니다!");
             check = 1;
-        } else if (essentialCount <= 3) {
+        } else if (essentialCount < 3) {
             System.out.println("선택한 필수 과목이 3개 미만입니다!");
             check = 1;
         } else if (optionalCount < 2) {

@@ -181,15 +181,15 @@ public class CampManagementApplication {
     //과목 입력
     public static void createSubjectList(Student student) {
         String input;
-        String[] temp;
+        String[] subjects;
         String id = student.getStudentId();
 
         System.out.println("수강과목 입력(쉼표로 구분, enter시 종료)");
         input = sc.nextLine();
         System.out.println("입력완료");
 //        System.out.println(input);
-        temp = input.split(",");
-//        System.out.println(Arrays.toString(temp)); //출력확인
+        subjects = input.split(",");
+//        System.out.println(Arrays.toString(subjects)); //출력확인
         checkSubjectList(id, temp, student); //과목중복체크
     }
 
@@ -210,11 +210,11 @@ public class CampManagementApplication {
         int essentialCount = 0;
         int optionalCount = 0;
         int check = 0;
-        ArrayList<Subject> temp = new ArrayList<>();
+        ArrayList<Subject> passSubject = new ArrayList<>();
 
         for (String subjectName : subjects) {
             Subject subject = findSubject(subjectName);
-            temp.add(subject);
+            passSubject.add(subject);
             if (SUBJECT_TYPE_MANDATORY.equals(subject.getSubjectType())) {
                 essentialCount++;
             } else if (SUBJECT_TYPE_CHOICE.equals(subject.getSubjectType())) {
@@ -222,18 +222,18 @@ public class CampManagementApplication {
             }
         }
 
-        if (essentialCount <= 3 && optionalCount <= 2) {
+        if (essentialCount < 3 && optionalCount < 2) {
             System.out.println("선택한 필수 과목이 3개 미만입니다!");
             System.out.println("선택한 선택 과목이 2개 미만입니다!");
             check = 1;
         } else if (essentialCount <= 3) {
             System.out.println("선택한 필수 과목이 3개 미만입니다!");
             check = 1;
-        } else if (optionalCount <= 2) {
+        } else if (optionalCount < 2) {
             System.out.println("선택한 선택 과목이 2개 미만입니다!");
             check = 1;
         } else {
-            subjectList.put(id, temp); // subject list에 추가
+            subjectList.put(id, passSubject); // subject list에 추가
             System.out.println("과목이 정상적으로 입력되었습니다.");
         }
 

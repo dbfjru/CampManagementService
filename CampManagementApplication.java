@@ -190,7 +190,7 @@ public class CampManagementApplication {
 //        System.out.println(input);
         subjects = input.split(",");
 //        System.out.println(Arrays.toString(subjects)); //출력확인
-        checkSubjectList(id, temp, student); //과목중복체크
+        checkSubjectList(id, subjects, student); //과목중복체크
     }
 
     public static Subject findSubject(String name) throws NullPointerException {

@@ -181,21 +181,22 @@ public class CampManagementApplication {
     //과목 입력
     public static void createSubjectList(Student student) {
         String input;
-        String[] temp;
+        String[] subjects;
         String id = student.getStudentId();
 
         System.out.println("수강과목 입력(쉼표로 구분, enter시 종료)");
         input = sc.nextLine();
         System.out.println("입력완료");
 //        System.out.println(input);
-        temp = input.split(",");
-//        System.out.println(Arrays.toString(temp)); //출력확인
-        checkSubjectList(id, temp, student); //과목중복체크
+        subjects = input.split(",");
+//        System.out.println(Arrays.toString(subjects)); //출력확인
+        checkSubjectList(id, subjects, student); //과목중복체크
     }
 
     public static Subject findSubject(String name) throws NullPointerException {
         Subject res = null;
         for (int i = 0; i < subjectStore.size(); i++) {
+
             if (subjectStore.get(i).getSubjectName().equals(name)) {
                 res = subjectStore.get(i);
             }
@@ -210,11 +211,11 @@ public class CampManagementApplication {
         int essentialCount = 0;
         int optionalCount = 0;
         int check = 0;
-        ArrayList<Subject> temp = new ArrayList<>();
+        ArrayList<Subject> passSubject = new ArrayList<>();
 
         for (String subjectName : subjects) {
             Subject subject = findSubject(subjectName);
-            temp.add(subject);
+            passSubject.add(subject);
             if (SUBJECT_TYPE_MANDATORY.equals(subject.getSubjectType())) {
                 essentialCount++;
             } else if (SUBJECT_TYPE_CHOICE.equals(subject.getSubjectType())) {
@@ -222,18 +223,18 @@ public class CampManagementApplication {
             }
         }
 
-        if (essentialCount <= 3 && optionalCount <= 2) {
+        if (essentialCount < 3 && optionalCount < 2) {
             System.out.println("선택한 필수 과목이 3개 미만입니다!");
             System.out.println("선택한 선택 과목이 2개 미만입니다!");
             check = 1;
-        } else if (essentialCount <= 3) {
+        } else if (essentialCount < 3) {
             System.out.println("선택한 필수 과목이 3개 미만입니다!");
             check = 1;
-        } else if (optionalCount <= 2) {
+        } else if (optionalCount < 2) {
             System.out.println("선택한 선택 과목이 2개 미만입니다!");
             check = 1;
         } else {
-            subjectList.put(id, temp); // subject list에 추가
+            subjectList.put(id, passSubject); // subject list에 추가
             System.out.println("과목이 정상적으로 입력되었습니다.");
         }
 
@@ -474,43 +475,106 @@ public class CampManagementApplication {
          * 1. 일단 어레이 리스트에서 set함수가 동작하는 방식이 내가 생각한 방식으로 동작하는지 알 수 없다.
          * set함수의 파라미터는 int index , Object object 인데, 여기서 Object 부분을 처리하려면 new Score(inputScore) 이어야할듯*/
 
-
         // 기능 구현
         System.out.println("\n점수 수정 성공!");
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() {
-        inquireStudent();
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        // 기능 구현 (조회할 특정 과목)
-        displayStudentSubjectList(studentId);
-        //---------임시-------------------------------
-        // 점수 등록이 정상적으로 되었는지 확인한 코드입니다. 수정하시면 됩니다.
-        System.out.println("조회하고자하는 '과목 번호'를 입력하세요...");
-        int subjectIndex = sc.nextInt() - 1;
-        sc.nextLine();//버퍼지우기
-        if (subjectIndex >= subjectList.get(studentId).size() || subjectIndex < 0) {
-            System.out.println("잘못된 번호입니다. 메뉴로 돌아갑니다.");
-            return;
-        }
-        String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 조회하고자하는 과목명
-        if (!scoreMap.get(studentId).containsKey(inputSubjectName)) {
-            System.out.println("해당과목은 등록된 점수가 없습니다.");
-            return;
-        }
-        System.out.println("\n해당과목 점수를 조회합니다...");
-        ArrayList<Score> temp = scoreMap.get(studentId).get(inputSubjectName);
-        int index = 1;
-        for (Score score : temp) {
-            System.out.println(index++ + "회차 : " + score.getTestScore());
+        boolean judge;
+        String studentId;
+        do {
+            inquireStudent();
+            studentId = getStudentId();
 
-        }
-        //-------------------------------------------
+            if (subjectList.containsKey(studentId)) {
+                // 기능 구현 (조회할 특정 과목)
+                displayStudentSubjectList(studentId);
+                System.out.println("조회하고자 하는 '과목 번호'를 입력하세요...");
+                int subjectIndex = sc.nextInt() - 1;
+                sc.nextLine(); // 버퍼 비우기
 
-        System.out.println("회차별 등급을 조회합니다...");
-        // 기능 구현
-        System.out.println("\n등급 조회 성공!");
+                if (subjectIndex >= subjectList.get(studentId).size() || subjectIndex < 0) {
+                    System.out.println("잘못된 번호입니다. 메뉴로 돌아갑니다.");
+                    judge = false;
+                } else {
+                    String inputSubjectName = subjectList.get(studentId).get(subjectIndex).getSubjectName(); // 조회하고자 하는 과목명
+
+                    if (!scoreMap.containsKey(studentId) || !scoreMap.get(studentId).containsKey(inputSubjectName)) {
+                        System.out.println("해당 과목은 등록된 점수가 없습니다.");
+                        judge = true;
+                    } else {
+                        // 조회하려는 과목의 타입을 가져옴
+                        String subjectType = subjectList.get(studentId).get(subjectIndex).getSubjectType();
+
+                        // 회차별 등급 조회 및 출력
+                        System.out.println();
+                        System.out.println("<" + inputSubjectName + ">" + " 과목 회차별 등급을 조회합니다...");
+                        System.out.print("과목 타입: ");
+                        if (subjectType.equals("MANDATORY")) {
+                            System.out.println("필수 과목");
+                        } else if (subjectType.equals("CHOICE")) {
+                            System.out.println("선택 과목");
+                        } else {
+                            System.out.println("알 수 없는 타입");
+                        }
+
+                        inquireGradeBySubject(studentId, inputSubjectName, subjectType);
+                        System.out.println();
+                        System.out.println("\n등급 조회 성공!");
+                        judge = false;
+                    }
+                }
+            } else {
+                System.out.println("해당 ID를 가진 학생은 존재하지 않습니다. 다시 입력해주세요.");
+                judge = true;
+            }
+        } while (judge);
     }
 
+    // 점수를 받아 등급을 계산하고 출력
+    private static void inquireGradeBySubject(String studentId, String subjectName, String subjectType) {
+        ArrayList<Score> studentSubjectScores  = scoreMap.get(studentId).get(subjectName);
+
+        int index = 1;
+        System.out.print("| ");
+        for (Score score : studentSubjectScores) {
+            int testScore = score.getTestScore();
+
+            // 등급 계산 로직
+            char grade = 'X';
+            if (subjectType.equals("MANDATORY")) {
+                // 필수과목인 경우의 등급 계산 로직
+                if (testScore >= 95) {
+                    grade = 'A';
+                } else if (testScore >= 90) {
+                    grade = 'B';
+                } else if (testScore >= 80) {
+                    grade = 'C';
+                } else if (testScore >= 70) {
+                    grade = 'D';
+                } else if (testScore >= 60) {
+                    grade = 'F';
+                } else {
+                    grade = 'N';
+                }
+            } else if (subjectType.equals("CHOICE")) {
+                // 선택과목인 경우의 등급 계산 로직
+                if (testScore >= 90) {
+                    grade = 'A';
+                } else if (testScore >= 80) {
+                    grade = 'B';
+                } else if (testScore >= 70) {
+                    grade = 'C';
+                } else if (testScore >= 60) {
+                    grade = 'D';
+                } else if (testScore >= 50) {
+                    grade = 'F';
+                } else {
+                    grade = 'N';
+                }
+            }
+            System.out.print(index++ + "회차 : " + grade + " | ");
+        }
+    }
 }
